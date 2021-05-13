@@ -5,7 +5,7 @@ import random
 import string
 
 MAXREQ = 100000000000
-MAXTHREAD = 100000
+MAXTHREAD = 10000
 
 def random_string(length:int=6, charset:str=string.ascii_letters+string.digits):
     return ''.join([random.choice(charset) for i in range(length)])
