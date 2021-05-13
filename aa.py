@@ -4,7 +4,7 @@ from aiohttp import ClientSession
 import random
 import string
 
-MAXREQ = 100000000000
+MAXREQ = 1000000
 MAXTHREAD = 5000
 
 def random_string(length:int=6, charset:str=string.ascii_letters+string.digits):
